@@ -86,3 +86,32 @@ class StandardScaler:
         x = self._check_is_array(x)
         self.fit(x)
         return self.transform(x)
+     
+class LabelEncoder:
+    def __init__(self):
+        self.classes_ = None  # Stores unique labels
+        self.label_map = None  # Dictionary mapping labels to integers
+
+    def fit(self, y: List[str]) -> None:
+        """
+        Fit the label encoder by identifying unique classes.
+        """
+        self.classes_ = np.unique(y)
+        self.label_map = {label: idx for idx, label in enumerate(self.classes_)}
+
+    def transform(self, y: List[str]) -> np.ndarray:
+        """
+        Transform labels into numerical format.
+        """
+        if self.label_map is None:
+            raise ValueError("LabelEncoder has not been fitted yet.")
+
+        return np.array([self.label_map[label] for label in y])
+
+    def fit_transform(self, y: List[str]) -> np.ndarray:
+        """
+        Fit to data and transform it.
+        """
+        self.fit(y)
+        return self.transform(y)
+
