@@ -1,4 +1,4 @@
-from aim5005.features import MinMaxScaler, StandardScaler
+from aim5005.features import MinMaxScaler, StandardScaler, LabelEncoder
 import numpy as np
 import unittest
 from unittest.case import TestCase
@@ -62,7 +62,43 @@ class TestFeatures(TestCase):
         result = scaler.transform([[2., 2.]]) 
         assert (result == expected).all(), "Scaler transform does not return expected values. Expect {}. Got: {}".format(expected.reshape(1,-1), result.reshape(1,-1))
 
-    # TODO: Add a test of your own below this line
+# TODO: Add a test of your own below this line
+    # Custom test case for checking irregular datasets 
+    def test_standard_scaler_custom_case(self):
+        scaler = StandardScaler()
+        data = [[3, 5], [3, 5], [10, 15], [10, 15]]
+        expected = np.array([[-1., -1.], [-1., -1.], [1., 1.], [1., 1.]])
+        
+        scaler.fit(data)
+        result = scaler.transform(data)
+
+        assert (result == expected).all(), (
+            f"Custom Scaler test failed. Expected:\n{expected}\nGot:\n{result}"
+        )
+
+# Test cases for Lab Encoder
+class TestLabelEncoder(TestCase):
+    def test_label_encoder_fit(self):
+        encoder = LabelEncoder()
+        data = ["cat", "dog", "bird", "dog", "cat"]
+        encoder.fit(data)
+        expected_classes = np.array(["bird", "cat", "dog"])
+
+        assert (encoder.classes_ == expected_classes).all(), (
+            f"LabelEncoder fit does not return expected classes. Got: {encoder.classes_}"
+        )
+
+    def test_label_encoder_transform(self):
+        encoder = LabelEncoder()
+        data = ["cat", "dog", "bird", "dog", "cat"]
+        encoder.fit(data)
+        result = encoder.transform(["cat", "bird", "dog"])
+        expected = np.array([1, 0, 2])
+
+        assert (result == expected).all(), (
+            f"LabelEncoder transform does not return expected values. Got: {result}"
+        )
+
     
 if __name__ == '__main__':
     unittest.main()
